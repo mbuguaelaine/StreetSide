@@ -19,11 +19,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -36,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,20 +45,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.streetside.R
+import com.example.streetside.model.SharedViewModel
+import com.example.streetside.ui.theme.Orange
 import com.example.streetside.ui.theme.components.TabLayout
 import com.example.streetside.ui.theme.ubuntuFont
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 data class Food(
+    val id: Int,
     val name: String,
     @DrawableRes val image: Int,
     val type: FoodType,
-    val liked: Boolean = false,
-    val price: String
+    var liked: Boolean = false,
+    val price: Float
 )
 
 enum class FoodType {
@@ -68,118 +70,136 @@ enum class FoodType {
 
 val foods = listOf(
     Food(
+        id = 1,
         name = "Ugali",
         image = R.drawable.ugali,
         type = FoodType.Meal,
-        price = "100"
+        price = 100f
     ),
     Food(
+        id = 2,
         name = "Githeri",
         image = R.drawable.githeri,
         type = FoodType.Meal,
-        price = "150"
+        price = 150f
     ),
     Food(
+        id = 3,
         name = "Mukimo",
         image = R.drawable.mukimo,
         type = FoodType.Meal,
-        price = "150"
+        price = 150f
     ),
     Food(
+        id = 4,
         name = "Pilau",
         image = R.drawable.pilau,
         type = FoodType.Meal,
-        price = "150"
+        price = 150f
     ),
     Food(
+        id = 5,
         name = "Beef Stew",
         image = R.drawable.beefstew,
         type = FoodType.Meal,
-        price = "200"
+        price = 200f
     ),
     Food(
+        id = 6,
         name = "Chicken Stew",
         image = R.drawable.chickenstew,
         type = FoodType.Meal,
-        price = "250"
+        price = 250f
     ),
     Food(
+        id = 7,
         name = "Apple",
         image = R.drawable.apple,
         type = FoodType.Side,
-        price = "50"
+        price = 50f
     ),
     Food(
+        id = 8,
         name = "Orange",
         image = R.drawable.orange,
         type = FoodType.Side,
-        price = "30"
+        price = 30f
     ),
     Food(
+        id = 9,
         name = "Watermelon",
         image = R.drawable.waterslice,
         type = FoodType.Side,
-        price = "20"
+        price = 20f
     ),
     Food(
+        id = 10,
         name = "Pineapple",
         image = R.drawable.pineslice,
         type = FoodType.Side,
-        price = "20"
+        price = 20f
     ),
     Food(
+        id = 11,
         name = "Mango",
         image = R.drawable.mango,
         type = FoodType.Side,
-        price = "100"
+        price = 100f
     ),
     Food(
+        id = 12,
         name = "Fruit Salad",
         image = R.drawable.fruitsalad,
         type = FoodType.Side,
-        price = "150"
+        price = 150f
     ),
     Food(
+        id = 13,
         name = "Smocha",
         image = R.drawable.smocha,
         type = FoodType.Snack,
-        price = "60"
+        price = 60f
     ),
     Food(
+        id = 14,
         name = "Mutura",
         image = R.drawable.mutura,
         type = FoodType.Snack,
-        price = "30"
+        price = 30f
     ),
     Food(
+        id = 15,
         name = "Smokie Pasua",
         image = R.drawable.smokiepasua,
         type = FoodType.Snack,
-        price = "40"
+        price = 40f
     ),
     Food(
+        id = 16,
         name = "Mayai Pasua",
         image = R.drawable.mayaipasua,
         type = FoodType.Snack,
-        price = "30"
+        price = 30f
     ),
     Food(
+        id = 17,
         name = "Bhajias",
         image = R.drawable.bhajias,
         type = FoodType.Snack,
-        price = "100"
+        price = 100f
     ),
     Food(
+        id = 18,
         name = "Chips Mwitu",
         image = R.drawable.chipsmwitu,
         type = FoodType.Snack,
-        price = "100"
+        price = 100f
     ),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuScreen(navController: NavController) {
+fun MenuScreen(navController: NavHostController, viewModel: SharedViewModel) {
     val uiController = rememberSystemUiController()
     uiController.isStatusBarVisible = false
 
@@ -191,9 +211,10 @@ fun MenuScreen(navController: NavController) {
             navigationIcon = {
                 Row {
                     Spacer(modifier = Modifier.width(8.dp))
-                    Button(colors = ButtonDefaults.buttonColors(Color.Black), onClick = { finishAffinity() } ) {
-                        Icon(imageVector = Icons.Filled.ArrowBack,
+                    Button(colors = ButtonDefaults.buttonColors(Color.White), onClick = { navController.navigate("order") }) {
+                        Icon(imageVector = Icons.Filled.ShoppingCart,
                             contentDescription = null,
+                            tint = Color.Black
                         )
                     }
 
@@ -218,31 +239,25 @@ fun MenuScreen(navController: NavController) {
                     "Meals" to {
                         Foods(
                             items = foodsState.filter { it.type == FoodType.Meal },
-//                            onLikeChange = onLikeChange,
-                            onLikeChange = { navController.navigate("order")},
-                            onTap = {
-//                                navController.navigate("food")
-                            }
+                            onLikeChange = onLikeChange,
+                            onTap = {},
+                            viewModel = viewModel
                         )
                     },
                     "Fruits" to {
                         Foods(
                             items = foodsState.filter { it.type == FoodType.Side },
-//                            onLikeChange = onLikeChange,
-                            onLikeChange = { navController.navigate("order")},
-                            onTap = {
-//                                navController.navigate("food")
-                            }
+                            onLikeChange = onLikeChange,
+                            onTap = {},
+                            viewModel = viewModel
                         )
                     },
                     "Snacks" to {
                         Foods(
                             items = foodsState.filter { it.type == FoodType.Snack },
-//                            onLikeChange = onLikeChange,
-                            onLikeChange = { navController.navigate("order")},
-                            onTap = {
-//                                navController.navigate("food")
-                            }
+                            onLikeChange = onLikeChange,
+                            onTap = {},
+                            viewModel = viewModel
                         )
                     },
                 ),
@@ -255,14 +270,11 @@ fun MenuScreen(navController: NavController) {
     }
 }
 
-fun finishAffinity() {
-    TODO("Not yet implemented")
-}
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Foods(items: List<Food>, onLikeChange: (Food) -> Unit, onTap: (Food) -> Unit) {
+fun Foods(items: List<Food>, onLikeChange: (Food) -> Unit,
+          onTap: (Food) -> Unit, viewModel: SharedViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -276,6 +288,13 @@ fun Foods(items: List<Food>, onLikeChange: (Food) -> Unit, onTap: (Food) -> Unit
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(items) { index, food ->
+                if (food.liked) {
+                    viewModel.addItem(food)
+                } else {
+                    viewModel.removeItem(food)
+                }
+
+                val drawableId = if (food.liked) R.drawable.ticked else R.drawable.unticked
                 Card(
                     onClick = {
                         onTap(food)
@@ -293,18 +312,17 @@ fun Foods(items: List<Food>, onLikeChange: (Food) -> Unit, onTap: (Food) -> Unit
                             .padding(8.dp),
                         contentAlignment = Alignment.TopEnd
                     ) {
-//                        Image(
-//                            modifier = Modifier
-//                                .size(25.dp)
-//                                .clickable {
-//                                    onLikeChange(food)
-//                                },
-//                            painter = painterResource(
-//                                id =
-//                                if (food.liked) R.drawable.ic_like else R.drawable.ic_unlike
-//                            ),
-//                            contentDescription = null
-//                        )
+                        Image(
+                            modifier = Modifier
+                                .size(25.dp)
+                                .clickable {
+                                    onLikeChange(food)
+                                },
+                            painter = painterResource(
+                                id = drawableId
+                            ),
+                            contentDescription = null
+                        )
                     }
                     Column(modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.Center,
@@ -321,9 +339,9 @@ fun Foods(items: List<Food>, onLikeChange: (Food) -> Unit, onTap: (Food) -> Unit
                             contentScale = ContentScale.Crop
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(text = food.name, fontSize = 15.sp, color = Color(0xff383838))
+                        Text(text = food.name, fontSize = 15.sp, color = Color.Black)
                         Spacer(modifier = Modifier.height(2.dp))
-                        Text(text = "Kshs ${food.price}")
+                        Text(text = "Kshs ${"%.2f".format(food.price)}", color = (Orange))
                         Spacer(modifier = Modifier.height(10.dp))
                     }
                 }
@@ -335,7 +353,8 @@ fun Foods(items: List<Food>, onLikeChange: (Food) -> Unit, onTap: (Food) -> Unit
 @Preview
 @Composable
 fun MenuPreview(){
-    MenuScreen(rememberNavController())
+    val mockViewModel = remember { mutableStateOf(SharedViewModel()) }
+    MenuScreen(rememberNavController(), viewModel = mockViewModel.value)
 }
 
 

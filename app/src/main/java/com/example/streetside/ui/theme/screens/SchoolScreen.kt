@@ -34,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.streetside.R
+import com.example.streetside.model.SharedViewModel
 import com.example.streetside.ui.theme.Orange
 import com.example.streetside.ui.theme.components.TabLayout
 import com.example.streetside.ui.theme.ubuntuFont
@@ -55,6 +57,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 data class Schools(
+    val id: Int,
     val name: String,
     @DrawableRes val image: Int,
     val type: College,
@@ -67,60 +70,70 @@ enum class College {
 
 val unis = listOf(
     Schools(
+        id = 25,
         name = "UoN",
         image = R.drawable.uonlogo,
         type = College.Uni,
         campus = "Chiromo Campus"
     ),
     Schools(
+        id = 26,
         name = "CUEA",
         image = R.drawable.cuealogo,
         type = College.Uni,
         campus = "Main Campus"
     ),
     Schools(
+        id = 27,
         name = "JKUAT",
         image = R.drawable.jkuatlogo,
         type = College.Uni,
         campus = "Karen Campus"
     ),
     Schools(
+        id = 28,
         name = "STRATHMORE",
         image = R.drawable.strathlogo,
         type = College.Uni,
         campus = "Main Campus"
     ),
     Schools(
+        id = 29,
         name = "USIU-A",
         image = R.drawable.usiulogo,
         type = College.Uni,
         campus = "Main Campus"
     ),
     Schools(
+        id = 30,
         name = "TUK",
         image = R.drawable.tuklogo,
         type = College.Uni,
         campus = "Main Campus"
     ),
     Schools(
+        id = 31,
         name = "UoN",
         image = R.drawable.uonlogo,
         type = College.Uni,
         campus = "Main Campus"
     ),
     Schools(
+        id = 32,
         name = "Riara",
         image = R.drawable.riaralogo,
         type = College.Uni,
         campus = "Main Campus"
     ),
     Schools(
+        id = 33,
         name = "MOI",
         image = R.drawable.moilogo,
         type = College.Uni,
         campus = "Main Campus"
     ),
     Schools(
+        id = 34,
         name = "KU",
         image = R.drawable.kulogo,
         type = College.Uni,
@@ -130,7 +143,7 @@ val unis = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SchoolScreen(navController: NavController) {
+fun SchoolScreen(navController: NavController, viewModel: SharedViewModel) {
     val uiController = rememberSystemUiController()
     uiController.isStatusBarVisible = false
 
@@ -167,7 +180,11 @@ fun SchoolScreen(navController: NavController) {
                     "Pick your University:" to {
                         Colleges(
                             items = unisState.filter { it.type == College.Uni },
-                            navController = navController
+                            navController = navController,
+                            viewModel = viewModel,
+                            onCollegeSelected = { schools ->
+                                viewModel.selectCollege(schools)
+                            }
                         )
                     },
                 ),
@@ -189,7 +206,8 @@ fun goBack(activity: Activity) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Colleges(items: List<Schools>, navController: NavController){
+fun Colleges(items: List<Schools>, onCollegeSelected: (Schools) -> Unit,
+             navController: NavController, viewModel: SharedViewModel){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -205,7 +223,9 @@ fun Colleges(items: List<Schools>, navController: NavController){
             itemsIndexed(items) { index, schools ->
                 Card(
                     onClick = {
-                        navController.navigate("vendors")
+                        viewModel.selectCollege(schools)
+                        onCollegeSelected(schools)
+                        navController.navigate("vendor")
                     },
                     elevation = CardDefaults.cardElevation(
                         defaultElevation = 4.dp
@@ -249,7 +269,8 @@ fun Colleges(items: List<Schools>, navController: NavController){
 @Preview
 @Composable
 fun SchoolPreview(){
-    SchoolScreen(rememberNavController())
+    val mockViewModel = remember { mutableStateOf(SharedViewModel()) }
+    SchoolScreen(rememberNavController(), viewModel = mockViewModel.value)
 }
 
 

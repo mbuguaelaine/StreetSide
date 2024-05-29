@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.streetside.R
+import com.example.streetside.model.SharedViewModel
 import com.example.streetside.ui.theme.Orange
 import com.example.streetside.ui.theme.components.TabLayout
 import com.example.streetside.ui.theme.ubuntuFont
@@ -54,10 +56,12 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 data class Vending(
+    val id: Int,
     val name: String,
     @DrawableRes val image: Int,
     val type: Vendor,
-    val owner: String
+    val owner: String,
+    val phonenumber: String
 )
 
 enum class Vendor {
@@ -66,46 +70,58 @@ enum class Vendor {
 
 val vends = listOf(
     Vending(
+        id = 19,
         name = "Ben's Station",
         image = R.drawable.benvendor,
         type = Vendor.Vend,
-        owner = "By: Ben"
+        owner = "By: Ben",
+        phonenumber = "254733763368"
     ),
     Vending(
+        id = 20,
         name = "Choma Zone",
         image = R.drawable.joramvendor,
         type = Vendor.Vend,
-        owner = "By: Joram"
+        owner = "By: Joram",
+        phonenumber = "254787956834"
     ),
     Vending(
+        id = 21,
         name = "Sherehe Villa",
         image = R.drawable.salmavendor,
         type = Vendor.Vend,
-        owner = "By: Salma"
+        owner = "By: Salma",
+        phonenumber = "254789624800"
     ),
     Vending(
+        id = 22,
         name = "Njiva Junction",
         image = R.drawable.rachelvendor,
         type = Vendor.Vend,
-        owner = "By: Rachel"
+        owner = "By: Rachel",
+        phonenumber = "254733612019"
     ),
     Vending(
+        id = 23,
         name = "Tulishe",
         image = R.drawable.mosesvendor,
         type = Vendor.Vend,
-        owner = "By: Moses"
+        owner = "By: Moses",
+        phonenumber = "0741235984"
     ),
     Vending(
+        id = 24,
         name = "Kwa Mary Samaki",
         image = R.drawable.maryvendor,
         type = Vendor.Vend,
-        owner = "By: Mary"
+        owner = "By: Mary",
+        phonenumber = "0765824317"
     ),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VendorScreen(navController: NavController) {
+fun VendorScreen(navController: NavController, viewModel: SharedViewModel) {
     val uiController = rememberSystemUiController()
     uiController.isStatusBarVisible = false
 
@@ -142,7 +158,11 @@ fun VendorScreen(navController: NavController) {
                     "Choose a Vendor:" to {
                         Vendors(
                             items = vendsState.filter { it.type == Vendor.Vend },
-                            navController = navController
+                            navController = navController,
+                            viewModel = viewModel,
+                            onVendorSelected = { vendors ->
+                                viewModel.selectVendor(vendors)
+                            }
                         )
                     },
                 ),
@@ -164,7 +184,8 @@ fun VendorScreen(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Vendors(items: List<Vending>, navController: NavController){
+fun Vendors(items: List<Vending>, onVendorSelected: (Vending) -> Unit,
+            navController: NavController, viewModel: SharedViewModel){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -180,6 +201,8 @@ fun Vendors(items: List<Vending>, navController: NavController){
             itemsIndexed(items) { index, vendors ->
                 Card(
                     onClick = {
+                        viewModel.selectVendor(vendors)
+                        onVendorSelected(vendors)
                         navController.navigate("menu")
                     },
                     elevation = CardDefaults.cardElevation(
@@ -224,7 +247,8 @@ fun Vendors(items: List<Vending>, navController: NavController){
 @Preview
 @Composable
 fun VendorPreview(){
-    VendorScreen(rememberNavController())
+    val mockViewModel = remember { mutableStateOf(SharedViewModel()) }
+    VendorScreen(rememberNavController(), viewModel = mockViewModel.value)
 }
 
 
