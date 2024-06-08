@@ -1,9 +1,6 @@
 package com.example.streetside.ui.theme.screens
 
 import android.app.Application
-import android.content.Context
-import android.content.SharedPreferences
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -34,12 +31,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.streetside.database.UserViewModel
 import com.example.streetside.database.UserViewModelFactory
 import com.example.streetside.model.SharedViewModel
@@ -147,7 +142,7 @@ fun LoginScreen(navController: NavHostController, viewModel: SharedViewModel,
     if (showToast) {
         LaunchedEffect(Unit) {
             Toast.makeText(context, "Invalid credentials", Toast.LENGTH_SHORT).show()
-            showToast = false // Reset showToast state
+            showToast = false
         }
     }
 }

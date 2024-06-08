@@ -19,8 +19,14 @@ class SharedViewModel : ViewModel() {
     private val _selectedVendor = MutableStateFlow<Vending?>(null)
     val selectedVendor: StateFlow<Vending?> get() = _selectedVendor
 
+    private val _vendors = MutableStateFlow<List<Vending?>>(emptyList())
+    val vendors: StateFlow<List<Vending?>> get() = _vendors
+
     private val _selectedCollege = MutableStateFlow<Schools?>(null)
     val selectedCollege: StateFlow<Schools?> get() = _selectedCollege
+
+    private val _filteredVendors = MutableStateFlow<List<Vending?>>(emptyList())
+    val filteredVendors: StateFlow<List<Vending?>> get() = _filteredVendors
 
     private val _foodQuantities = MutableStateFlow<Map<Food, Int>>(emptyMap())
     val foodQuantities: StateFlow<Map<Food, Int>>  = _foodQuantities
@@ -60,6 +66,21 @@ class SharedViewModel : ViewModel() {
 
     fun selectCollege(schools: Schools) {
         _selectedCollege.value = schools
+        filterVendors()
+    }
+
+    private fun filterVendors() {
+        val selectedCollegeId = _selectedCollege.value?.id
+        _filteredVendors.value = if (selectedCollegeId != null) {
+            _vendors.value.filter { it?.schoolIds?.contains(selectedCollegeId)!! }
+        } else {
+            _vendors.value
+        }
+    }
+
+    fun setVendors(vendors: List<Vending>) {
+        _vendors.value = vendors
+        filterVendors()
     }
 
     fun updateQuantity(food: Food, quantity: Int) {
@@ -117,12 +138,4 @@ class SharedViewModel : ViewModel() {
             Toast.makeText(context, "Vendor not selected", Toast.LENGTH_SHORT).show()
         }
     }
-
-//    fun rateVendor(vendorName: String, rating: Int, context: Context) {
-//        viewModelScope.launch {
-//            val vendorRating = Ratings(vendorName = vendorName, rating = rating)
-//            userRepository.insertRating(vendorRating)
-//            Toast.makeText(context, "Rating recorded", Toast.LENGTH_SHORT).show()
-//        }
-//    }
 }

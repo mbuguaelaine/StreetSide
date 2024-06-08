@@ -31,14 +31,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -58,69 +61,83 @@ data class Vending(
     @DrawableRes val image: Int,
     val type: Vendor,
     val owner: String,
-    val phonenumber: String
+    val phonenumber: String,
+    val schoolIds: List<Int>
 )
 
 enum class Vendor {
     Vend
 }
 
-val vends = listOf(
-    Vending(
-        id = 19,
-        name = "Ben's Station",
-        image = R.drawable.benvendor,
-        type = Vendor.Vend,
-        owner = "By: Ben",
-        phonenumber = "254733763368"
-    ),
-    Vending(
-        id = 20,
-        name = "Choma Zone",
-        image = R.drawable.joramvendor,
-        type = Vendor.Vend,
-        owner = "By: Joram",
-        phonenumber = "254787956834"
-    ),
-    Vending(
-        id = 21,
-        name = "Sherehe Villa",
-        image = R.drawable.salmavendor,
-        type = Vendor.Vend,
-        owner = "By: Salma",
-        phonenumber = "254789624800"
-    ),
-    Vending(
-        id = 22,
-        name = "Njiva Junction",
-        image = R.drawable.rachelvendor,
-        type = Vendor.Vend,
-        owner = "By: Rachel",
-        phonenumber = "254733612019"
-    ),
-    Vending(
-        id = 23,
-        name = "Tulishe",
-        image = R.drawable.mosesvendor,
-        type = Vendor.Vend,
-        owner = "By: Moses",
-        phonenumber = "0741235984"
-    ),
-    Vending(
-        id = 24,
-        name = "Kwa Mary Samaki",
-        image = R.drawable.maryvendor,
-        type = Vendor.Vend,
-        owner = "By: Mary",
-        phonenumber = "0765824317"
-    ),
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VendorScreen(navController: NavController, viewModel: SharedViewModel) {
     val uiController = rememberSystemUiController()
+    val context = LocalContext.current
     uiController.isStatusBarVisible = false
+
+    LaunchedEffect(Unit) {
+        val vends = listOf(
+            Vending(
+                id = 19,
+                name = "Ben's Station",
+                image = R.drawable.benvendor,
+                type = Vendor.Vend,
+                owner = "By: Ben",
+                phonenumber = "254733763368",
+                schoolIds = listOf(26, 27)
+            ),
+            Vending(
+                id = 20,
+                name = "Choma Zone",
+                image = R.drawable.joramvendor,
+                type = Vendor.Vend,
+                owner = "By: Joram",
+                phonenumber = "254787956834",
+                schoolIds = listOf(31, 25)
+            ),
+            Vending(
+                id = 21,
+                name = "Sherehe Villa",
+                image = R.drawable.salmavendor,
+                type = Vendor.Vend,
+                owner = "By: Salma",
+                phonenumber = "254789624800",
+                schoolIds = listOf(31, 25)
+            ),
+            Vending(
+                id = 22,
+                name = "Njiva Junction",
+                image = R.drawable.rachelvendor,
+                type = Vendor.Vend,
+                owner = "By: Rachel",
+                phonenumber = "254733612019",
+                schoolIds = listOf(26, 27)
+            ),
+            Vending(
+                id = 23,
+                name = "Tulishe",
+                image = R.drawable.mosesvendor,
+                type = Vendor.Vend,
+                owner = "By: Moses",
+                phonenumber = "0741235984",
+                schoolIds = listOf(28, 29, 30)
+            ),
+            Vending(
+                id = 24,
+                name = "Kwa Mary Samaki",
+                image = R.drawable.maryvendor,
+                type = Vendor.Vend,
+                owner = "By: Mary",
+                phonenumber = "0765824317",
+                schoolIds = listOf(32, 33, 34)
+            ),
+        )
+        viewModel.setVendors(vends)
+    }
+
+
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
@@ -145,16 +162,20 @@ fun VendorScreen(navController: NavController, viewModel: SharedViewModel) {
             val selectedVendor = remember {
                 mutableIntStateOf(0)
             }
-            val vendsState = remember {
-                mutableStateListOf(*(vends).toTypedArray())
-            }
+//            val vendsState = remember {
+//                mutableStateListOf(*(vends).toTypedArray())
+//            }
+
 
             Spacer(modifier = Modifier.height(16.dp))
             TabLayout(
                 items = listOf(
                     "Choose a Vendor:" to {
                         Vendors(
-                            items = vendsState.filter { it.type == Vendor.Vend },
+//                            filteredVendors = { schoolId ->
+//                                              viewModel.filterVendors(schoolId)
+//                            },
+//                            items = vendsState.filter { it.type == Vendor.Vend },
                             navController = navController,
                             viewModel = viewModel,
                             onVendorSelected = { vendors ->
@@ -177,8 +198,12 @@ fun VendorScreen(navController: NavController, viewModel: SharedViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Vendors(items: List<Vending>, onVendorSelected: (Vending) -> Unit,
-            navController: NavController, viewModel: SharedViewModel){
+fun Vendors(
+//    items: List<Vending>,
+//    filteredVendors: (Int) -> Unit,
+    onVendorSelected: (Vending) -> Unit,
+    navController: NavController, viewModel: SharedViewModel){
+    val filteredVendors by viewModel.filteredVendors.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -191,11 +216,15 @@ fun Vendors(items: List<Vending>, onVendorSelected: (Vending) -> Unit,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            itemsIndexed(items) { index, vendors ->
+            itemsIndexed(filteredVendors) { index, vendors ->
                 Card(
                     onClick = {
-                        viewModel.selectVendor(vendors)
-                        onVendorSelected(vendors)
+                        if (vendors != null) {
+                            viewModel.selectVendor(vendors)
+                        }
+                        if (vendors != null) {
+                            onVendorSelected(vendors)
+                        }
                         navController.navigate("menu")
                     },
                     elevation = CardDefaults.cardElevation(
@@ -221,7 +250,7 @@ fun Vendors(items: List<Vending>, onVendorSelected: (Vending) -> Unit,
                                 .size(120.dp)
                                 .aspectRatio(1f)
                                 .clip(RoundedCornerShape(10.dp)),
-                            painter = painterResource(id = vendors.image),
+                            painter = painterResource(id = vendors!!.image),
                             contentDescription = vendors.name,
                             contentScale = ContentScale.Crop
                         )
