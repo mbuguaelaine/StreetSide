@@ -266,11 +266,11 @@ fun Colleges(items: List<Schools>, onCollegeSelected: (Schools) -> Unit,
     }
 }
 
-@Preview
-@Composable
-fun SchoolPreview(){
-    val mockViewModel = remember { mutableStateOf(SharedViewModel()) }
-    SchoolScreen(rememberNavController(), viewModel = mockViewModel.value)
-}
+//@Preview
+//@Composable
+//fun SchoolPreview(){
+//    val mockViewModel = remember { mutableStateOf(SharedViewModel()) }
+//    SchoolScreen(rememberNavController(), viewModel = mockViewModel.value)
+//}
 
 

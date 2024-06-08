@@ -46,6 +46,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.streetside.R
 import com.example.streetside.model.SharedViewModel
@@ -197,6 +199,7 @@ val foods = listOf(
     ),
 )
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuScreen(navController: NavHostController, viewModel: SharedViewModel) {
@@ -211,7 +214,8 @@ fun MenuScreen(navController: NavHostController, viewModel: SharedViewModel) {
             navigationIcon = {
                 Row {
                     Spacer(modifier = Modifier.width(8.dp))
-                    Button(colors = ButtonDefaults.buttonColors(Color.White), onClick = { navController.navigate("order") }) {
+                    Button(colors = ButtonDefaults.buttonColors(Color.White), onClick = { navController.navigate("order?showPrompt=true")
+                    }) {
                         Icon(imageVector = Icons.Filled.ShoppingCart,
                             contentDescription = null,
                             tint = Color.Black
@@ -350,11 +354,11 @@ fun Foods(items: List<Food>, onLikeChange: (Food) -> Unit,
     }
 }
 
-@Preview
-@Composable
-fun MenuPreview(){
-    val mockViewModel = remember { mutableStateOf(SharedViewModel()) }
-    MenuScreen(rememberNavController(), viewModel = mockViewModel.value)
-}
+//@Preview
+//@Composable
+//fun MenuPreview(){
+//    val mockViewModel = remember { mutableStateOf(SharedViewModel()) }
+//    MenuScreen(rememberNavController(), viewModel = mockViewModel.value)
+//}
 
 

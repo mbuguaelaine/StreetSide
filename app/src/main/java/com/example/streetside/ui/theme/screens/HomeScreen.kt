@@ -32,28 +32,29 @@ import com.example.streetside.ui.theme.Orange
 
 @Composable
 fun HomeScreen(navController: NavController) {
-//    Box(modifier = Modifier.fillMaxSize()){
-//        Image(painter = painterResource(id = R.drawable.streetsidebackground),
-//              contentDescription = "Background Image",
-//              contentScale = ContentScale.FillBounds,
-//              modifier = Modifier.matchParentSize())
-
-//    }
     Column(modifier = Modifier
         .fillMaxSize()
         .background(Color.Black),
         horizontalAlignment = Alignment.CenterHorizontally) {
-        var context= LocalContext.current
+        LocalContext.current
 
         Spacer(modifier = Modifier.height(50.dp))
 
-        Text(text = "WELCOME TO STREETSIDE",
+        Text(text = "WELCOME TO",
             textAlign = TextAlign.Center,
             fontWeight = FontWeight(900),
             color = (Orange),
-//            fontFamily = (ubuntuFont),
             fontSize = 40.sp)
-        Spacer(modifier = Modifier.height(200.dp))
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Text(text = "STREETSIDE",
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight(900),
+            color = (Orange),
+            fontSize = 40.sp)
+
+        Spacer(modifier = Modifier.height(150.dp))
 
         Button(onClick = {
             navController.navigate("login")
@@ -65,13 +66,13 @@ fun HomeScreen(navController: NavController) {
                 color = Color.Black,
                 fontSize = 25.sp)
         }
-        Spacer(modifier = Modifier.height(100.dp))
+
+        Spacer(modifier = Modifier.height(70.dp))
 
         Text(text = "Don't have an account?",
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.SemiBold,
             color = (Orange),
-//            fontFamily = (ubuntuFont),
             fontSize = 25.sp)
         Spacer(modifier = Modifier.height(15.dp))
 
@@ -92,7 +93,6 @@ fun HomeScreen(navController: NavController) {
             textAlign = TextAlign.Center,
             fontWeight = FontWeight(900),
             color = (Orange),
-//            fontFamily = (ubuntuFont),
             fontSize = 30.sp)
 
     }

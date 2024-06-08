@@ -1,5 +1,8 @@
 package com.example.streetside.ui.theme.screens
 
+import android.app.Application
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -32,16 +33,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.streetside.database.User
+import com.example.streetside.database.UserViewModel
+import com.example.streetside.database.UserViewModelFactory
 import com.example.streetside.ui.theme.Orange
 import com.example.streetside.ui.theme.ubuntuFont
 
 @Composable
-fun RegisterScreen(navController: NavHostController) {
+fun RegisterScreen(navController: NavHostController,
+                   userViewModel: UserViewModel = viewModel(factory = UserViewModelFactory(LocalContext.current.applicationContext as Application))
+){
     var username by remember { mutableStateOf(TextFieldValue("")) }
+    var firstname by remember { mutableStateOf(TextFieldValue("")) }
+    var surname by remember { mutableStateOf(TextFieldValue("")) }
     var pass by remember { mutableStateOf(TextFieldValue("")) }
     var confirmpass by remember { mutableStateOf(TextFieldValue("")) }
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -67,7 +78,31 @@ fun RegisterScreen(navController: NavHostController) {
                 .padding(8.dp),
 
             )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
+
+        OutlinedTextField(
+            value = firstname, onValueChange = { firstname = it },
+            label = { Text(text = "Enter First Name") },
+
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+
+            )
+        Spacer(modifier = Modifier.height(10.dp))
+
+        OutlinedTextField(
+            value = surname, onValueChange = { surname = it },
+            label = { Text(text = "Enter Surname") },
+
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+
+            )
+        Spacer(modifier = Modifier.height(10.dp))
 
         OutlinedTextField(
             value = pass, onValueChange = { pass = it },
@@ -77,7 +112,7 @@ fun RegisterScreen(navController: NavHostController) {
                 .fillMaxWidth()
                 .padding(8.dp)
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
             value = confirmpass, onValueChange = {
                 confirmpass = it
@@ -88,11 +123,24 @@ fun RegisterScreen(navController: NavHostController) {
                 .fillMaxWidth()
                 .padding(8.dp)
         )
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         Button(onClick = {
-            navController.navigate("login")
-        }, Modifier.size(width = 300.dp, height = 60.dp),
+            if (pass.text == confirmpass.text) {
+                val user = User(userName = username.text, pass = pass.text,
+                    firstname = firstname.text, surname = surname.text)
+                userViewModel.insert(user, onSuccess = {
+                    navController.navigate("login")
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                    Log.d("RegisterScreen", "Creating New User")
+                }, onError = {
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                })
+            } else {
+                Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+            }
+        },
+            Modifier.size(width = 300.dp, height = 60.dp),
             colors = ButtonDefaults.buttonColors(Orange),
             shape = RectangleShape
         ) {
@@ -102,7 +150,7 @@ fun RegisterScreen(navController: NavHostController) {
                 fontSize = 25.sp)
         }
 
-        Spacer(modifier = Modifier.height(100.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Text(text = "Already have an account?",
             textAlign = TextAlign.Center,
@@ -122,10 +170,9 @@ fun RegisterScreen(navController: NavHostController) {
                 color = Color.Black,
                 fontSize = 25.sp)
         }
-
-
     }
 }
+
 @Preview
 @Composable
 fun RegisterPreview() {

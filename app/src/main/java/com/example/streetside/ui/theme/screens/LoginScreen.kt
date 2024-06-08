@@ -1,5 +1,10 @@
 package com.example.streetside.ui.theme.screens
 
+import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,11 +16,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -24,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -32,16 +37,39 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.streetside.database.UserViewModel
+import com.example.streetside.database.UserViewModelFactory
+import com.example.streetside.model.SharedViewModel
+import com.example.streetside.model.Utilities
 import com.example.streetside.ui.theme.Orange
 import com.example.streetside.ui.theme.ubuntuFont
 
 @Composable
-fun LoginScreen(navController: NavHostController){
+fun LoginScreen(navController: NavHostController, viewModel: SharedViewModel,
+                userViewModel: UserViewModel = viewModel(factory = UserViewModelFactory(LocalContext.current.applicationContext as Application))
+){
     var username by remember { mutableStateOf(TextFieldValue("")) }
     var pass by remember { mutableStateOf(TextFieldValue("")) }
-    var context= LocalContext.current
+    val context= LocalContext.current
+    val userState by userViewModel.user.observeAsState()
+
+//    val loggedInUsername = Utilities.getUsername(context)
+//    if (loggedInUsername != null) {
+//        viewModel.getUserByUsername(loggedInUsername)
+//    }
+
+    var showToast by remember { mutableStateOf(false) }
+
+    // Check userState and update showToast state
+    LaunchedEffect(userState) {
+        if (userState == null && username.text.isNotEmpty() && pass.text.isNotEmpty()) {
+            showToast = true
+        }
+    }
+
     Column(modifier = Modifier
         .fillMaxSize()
         .background(Color.Black),
@@ -53,7 +81,8 @@ fun LoginScreen(navController: NavHostController){
             fontSize = 30.sp)
         Spacer(modifier = Modifier.height(20.dp))
 
-        OutlinedTextField(value =username , onValueChange = {username=it},
+        OutlinedTextField(value =username,
+            onValueChange = {username=it},
             label = { Text(text = "Enter Username") },
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
             modifier = Modifier
@@ -63,17 +92,27 @@ fun LoginScreen(navController: NavHostController){
             )
         Spacer(modifier = Modifier.height(20.dp))
 
-        OutlinedTextField(value =pass , onValueChange = {pass=it},
+        OutlinedTextField(value =pass,
+            onValueChange = {pass=it},
             label = { Text(text = "Enter Password") },
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
         )
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(100.dp))
 
         Button(onClick = {
-            navController.navigate("menu")
+            userViewModel.getUserName(username.text)
+            userViewModel.user.observeForever {
+                if (it?.pass == pass.text) {
+                    Utilities.saveUsername(context, username.text)
+                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
+                    navController.navigate("school")
+                } else {
+                    showToast = true
+                }
+            }
         }, Modifier.size(width = 300.dp, height = 60.dp),
             colors = ButtonDefaults.buttonColors(Orange),
             shape = RectangleShape
@@ -104,14 +143,17 @@ fun LoginScreen(navController: NavHostController){
                 color = Color.Black,
                 fontSize = 25.sp)
         }
-
     }
-
-
-
+    if (showToast) {
+        LaunchedEffect(Unit) {
+            Toast.makeText(context, "Invalid credentials", Toast.LENGTH_SHORT).show()
+            showToast = false // Reset showToast state
+        }
+    }
 }
-@Preview
-@Composable
-fun LoginPreview() {
-    LoginScreen(rememberNavController())
-}
+
+//@Preview
+//@Composable
+//fun LoginPreview() {
+//    LoginScreen(rememberNavController())
+//}

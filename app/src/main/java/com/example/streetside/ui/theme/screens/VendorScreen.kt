@@ -33,7 +33,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,11 +41,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.streetside.R
 import com.example.streetside.model.SharedViewModel
 import com.example.streetside.ui.theme.Orange
@@ -176,10 +173,6 @@ fun VendorScreen(navController: NavController, viewModel: SharedViewModel) {
 }
 
 
-//fun goBack(activity: Activity) {
-//    activity.onBackPressed()
-//}
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -244,11 +237,11 @@ fun Vendors(items: List<Vending>, onVendorSelected: (Vending) -> Unit,
     }
 }
 
-@Preview
-@Composable
-fun VendorPreview(){
-    val mockViewModel = remember { mutableStateOf(SharedViewModel()) }
-    VendorScreen(rememberNavController(), viewModel = mockViewModel.value)
-}
+//@Preview
+//@Composable
+//fun VendorPreview(){
+//    val mockViewModel = remember { mutableStateOf(SharedViewModel()) }
+//    VendorScreen(rememberNavController(), viewModel = mockViewModel.value)
+//}
 
 

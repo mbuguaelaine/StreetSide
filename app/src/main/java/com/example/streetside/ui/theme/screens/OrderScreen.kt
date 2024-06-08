@@ -15,14 +15,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -36,7 +34,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -48,11 +45,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.streetside.R
 import com.example.streetside.model.SharedViewModel
 import com.example.streetside.ui.theme.Orange
@@ -61,9 +57,54 @@ import com.example.streetside.ui.theme.ubuntuFont
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrderScreen(navController: NavHostController, viewModel: SharedViewModel) {
+fun OrderScreen(navController: NavHostController, viewModel: SharedViewModel, showPrompt: Boolean) {
     val likedItems by viewModel.likedItems.collectAsState(initial = listOf())
-    val selectedVendor by viewModel.selectedVendor.collectAsState()
+    var showDialog by remember { mutableStateOf(showPrompt) }
+    val context = LocalContext.current
+//    var user by remember { mutableStateOf<User?>(null) }
+//    val username = Utilities.getUsername(context)
+//
+//    LaunchedEffect(username) {
+//        username?.let {
+//            viewModel.getUserByUsername(it) { fetchedUser ->
+//                user = fetchedUser
+//            }
+//        }
+//    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showDialog = false
+                navController.navigate("menu") {
+                    popUpTo("order") { inclusive = true }
+                }
+            },
+            title = { Text(text = "Delivery Confirmation") },
+            text = { Text(text = "The standard Kshs 100 delivery fee has automatically been added to your total.") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDialog = false
+                    }
+                ) {
+                    Text("Proceed")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        showDialog = false
+                        navController.navigate("menu") {
+                            popUpTo("order") { inclusive = true }
+                        }
+                    }
+                ) {
+                    Text("Go Back")
+                }
+            }
+        )
+    }
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
@@ -107,7 +148,8 @@ fun OrderScreen(navController: NavHostController, viewModel: SharedViewModel) {
                             onTap = {},
                             onQuantityChange = { _, _ -> },
                             viewModel = viewModel,
-                            onConfirmOrder = {}
+                            onConfirmOrder = {},
+                            navController = navController
                         )
                     }
                 ),
@@ -123,10 +165,8 @@ fun OrderScreen(navController: NavHostController, viewModel: SharedViewModel) {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun Orders(items: List<Food>, onLikeChange: (Food) -> Unit,
-               onTap: (Food) -> Unit, onQuantityChange: (Food, Int) -> Unit ,
-               viewModel: SharedViewModel, onConfirmOrder: () -> Unit) {
-        val likedItems by viewModel.likedItems.collectAsState(initial = listOf())
-        val selectedVendor by viewModel.selectedVendor.collectAsState()
+               onTap: (Food) -> Unit, onQuantityChange: (Food, Int) -> Unit,
+               viewModel: SharedViewModel, onConfirmOrder: () -> Unit, navController: NavController) {
         val context = LocalContext.current
         val totalPrice by viewModel.totalPrice.collectAsState()
 
@@ -258,7 +298,8 @@ fun OrderScreen(navController: NavHostController, viewModel: SharedViewModel) {
                 }
             Spacer(modifier = Modifier.height(20.dp))
             Button(onClick = {},
-                Modifier.size(width = 300.dp, height = 60.dp)
+                Modifier
+                    .size(width = 300.dp, height = 60.dp)
                     .align(Alignment.CenterHorizontally),
                 colors = ButtonDefaults.buttonColors(Orange),
                 shape = RectangleShape)
@@ -274,6 +315,7 @@ fun OrderScreen(navController: NavHostController, viewModel: SharedViewModel) {
                 onClick = {
                     onConfirmOrder()
                     viewModel.sendOrderViaWhatsApp(items, viewModel.selectedVendor.value, context)
+                    navController.navigate("rate")
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 colors = ButtonDefaults.buttonColors(Orange)
@@ -286,9 +328,9 @@ fun OrderScreen(navController: NavHostController, viewModel: SharedViewModel) {
         }
 
 
-@Preview
-@Composable
-fun OrderPreview(){
-    val mockViewModel = remember { mutableStateOf(SharedViewModel()) }
-    OrderScreen(rememberNavController(), viewModel = mockViewModel.value)
-}
+//@Preview
+//@Composable
+//fun OrderPreview(){
+//    val mockViewModel = remember { mutableStateOf(SharedViewModel()) }
+//    OrderScreen(rememberNavController(), viewModel = mockViewModel.value, showPrompt = false)
+//}

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.example.streetside.ui.theme.screens.Food
 import com.example.streetside.ui.theme.screens.Schools
@@ -26,8 +25,14 @@ class SharedViewModel : ViewModel() {
     private val _foodQuantities = MutableStateFlow<Map<Food, Int>>(emptyMap())
     val foodQuantities: StateFlow<Map<Food, Int>>  = _foodQuantities
 
-    private val _totalPrice = MutableStateFlow(50.0)
+    private val _totalPrice = MutableStateFlow(100.0)
     val totalPrice: StateFlow<Double> get() = _totalPrice
+
+//    private val _customName = mutableStateOf<User?>(null)
+//    val customName: State<User?> get() = _customName
+//
+//    private val _userDetails = mutableStateOf<User?>(null)
+//    val userDetails: State<User?> = _userDetails
 
     fun addItem(food: Food) {
         if (_likedItems.value.none { it.id == food.id }) {
@@ -70,18 +75,34 @@ class SharedViewModel : ViewModel() {
 
     fun calculateTotalPrice() {
         val itemTotal = _likedItems.value.sumOf { it.price.toDouble() * getQuantity(it) }
-        val deliveryFee = 50.0
+        val deliveryFee = 100.0
         _totalPrice.value = itemTotal + deliveryFee
     }
+
+//    fun getUserByUsername(username: String, callback: (User?) -> Unit) {
+//        viewModelScope.launch {
+//            val user = userRepository.getUserByUsername(username)
+//            callback(user)
+//            _customName.value = user
+//        }
+//    }
+
+//    fun fetchUserDetails(username: String) {
+//        viewModelScope.launch {
+//            val user = userRepository.getUserByUsername(username)
+//            _customName.value = user
+//        }
+//    } ${name?.firstname} ${name?.surname} (for the whatsapp part)
 
     fun sendOrderViaWhatsApp(items: List<Food>, vendor: Vending?, context: Context) {
         vendor?.let {
             val orderDetails = items.joinToString(separator = "\n") { food ->
                 "${food.name} x ${getQuantity(food)} = Kshs ${"%.2f".format(food.price.toDouble() * getQuantity(food))}"
             }
+//            val name = customName.value
             val total = totalPrice.value
             val schools = selectedCollege.value
-            val message = "Order Details:\n$orderDetails\n\nTotal: Kshs ${"%.2f".format(total)}\n\nDeliver To: ${schools?.name} - ${schools?.campus}"
+            val message = "Order Details:\n$orderDetails\n\nTotal: Kshs ${"%.2f".format(total)}\n\nDeliver To: ${schools?.name} - ${schools?.campus}\n\nCustomer Name:"
 
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 data = Uri.parse("https://wa.me/${vendor.phonenumber}?text=${Uri.encode(message)}")
@@ -96,4 +117,12 @@ class SharedViewModel : ViewModel() {
             Toast.makeText(context, "Vendor not selected", Toast.LENGTH_SHORT).show()
         }
     }
+
+//    fun rateVendor(vendorName: String, rating: Int, context: Context) {
+//        viewModelScope.launch {
+//            val vendorRating = Ratings(vendorName = vendorName, rating = rating)
+//            userRepository.insertRating(vendorRating)
+//            Toast.makeText(context, "Rating recorded", Toast.LENGTH_SHORT).show()
+//        }
+//    }
 }

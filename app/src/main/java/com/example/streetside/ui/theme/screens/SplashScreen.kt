@@ -42,7 +42,6 @@ fun SplashScreen(navController: NavController) {
         )
     }
 
-    // Navigate to the main screen after some delay
     LaunchedEffect(key1 = true) {
         delay(3000)
         navController.navigate("school") {
