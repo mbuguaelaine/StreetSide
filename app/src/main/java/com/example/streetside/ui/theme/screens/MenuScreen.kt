@@ -34,7 +34,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,13 +41,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.example.streetside.R
 import com.example.streetside.model.SharedViewModel
 import com.example.streetside.ui.theme.Orange
@@ -67,7 +62,7 @@ data class Food(
 )
 
 enum class FoodType {
-    Meal, Side, Snack
+    Meal, Fruit, Snack
 }
 
 val foods = listOf(
@@ -76,21 +71,28 @@ val foods = listOf(
         name = "Ugali",
         image = R.drawable.ugali,
         type = FoodType.Meal,
+        price = 30f
+    ),
+    Food(
+        id = 35,
+        name = "Chapati",
+        image = R.drawable.chapati,
+        type = FoodType.Meal,
+        price = 20f
+    ),
+    Food(
+        id = 17,
+        name = "Bhajias",
+        image = R.drawable.bhajias,
+        type = FoodType.Meal,
         price = 100f
     ),
     Food(
-        id = 2,
-        name = "Githeri",
-        image = R.drawable.githeri,
+        id = 18,
+        name = "Chips",
+        image = R.drawable.chips,
         type = FoodType.Meal,
-        price = 150f
-    ),
-    Food(
-        id = 3,
-        name = "Mukimo",
-        image = R.drawable.mukimo,
-        type = FoodType.Meal,
-        price = 150f
+        price = 100f
     ),
     Food(
         id = 4,
@@ -98,6 +100,27 @@ val foods = listOf(
         image = R.drawable.pilau,
         type = FoodType.Meal,
         price = 150f
+    ),
+    Food(
+        id = 2,
+        name = "Githeri",
+        image = R.drawable.githeri,
+        type = FoodType.Meal,
+        price = 40f
+    ),
+    Food(
+        id = 3,
+        name = "Mukimo",
+        image = R.drawable.mukimo,
+        type = FoodType.Meal,
+        price = 65f
+    ),
+    Food(
+        id = 36,
+        name = "Ndengu",
+        image = R.drawable.ndengu,
+        type = FoodType.Meal,
+        price = 20f
     ),
     Food(
         id = 5,
@@ -109,51 +132,65 @@ val foods = listOf(
     Food(
         id = 6,
         name = "Chicken Stew",
-        image = R.drawable.chickenstew,
+        image = R.drawable.chickenstew2,
         type = FoodType.Meal,
         price = 250f
     ),
     Food(
         id = 7,
-        name = "Apple",
+        name = "Apple (1pc)",
         image = R.drawable.apple,
-        type = FoodType.Side,
-        price = 50f
+        type = FoodType.Fruit,
+        price = 35f
     ),
     Food(
         id = 8,
-        name = "Orange",
+        name = "Orange (1pc)",
         image = R.drawable.orange,
-        type = FoodType.Side,
-        price = 30f
+        type = FoodType.Fruit,
+        price = 20f
     ),
     Food(
         id = 9,
-        name = "Watermelon",
+        name = "Watermelon (1 slice)",
         image = R.drawable.waterslice,
-        type = FoodType.Side,
+        type = FoodType.Fruit,
         price = 20f
     ),
     Food(
         id = 10,
-        name = "Pineapple",
+        name = "Pineapple (1 slice)",
         image = R.drawable.pineslice,
-        type = FoodType.Side,
+        type = FoodType.Fruit,
         price = 20f
     ),
     Food(
         id = 11,
-        name = "Mango",
+        name = "Mango (1pc)",
         image = R.drawable.mango,
-        type = FoodType.Side,
-        price = 100f
+        type = FoodType.Fruit,
+        price = 40f
+    ),
+    Food(
+        id = 37,
+        name = "Avocado (1pc)",
+        image = R.drawable.avocado,
+        type = FoodType.Fruit,
+        price = 30f
+    ),
+    Food(
+        id = 38,
+        name = "Banana (1pc)",
+        image = R.drawable.banana,
+        type = FoodType.Fruit,
+        price = 10f
     ),
     Food(
         id = 12,
         name = "Fruit Salad",
         image = R.drawable.fruitsalad,
-        type = FoodType.Side,
-        price = 150f
+        type = FoodType.Fruit,
+        price = 60f
     ),
     Food(
         id = 13,
@@ -163,11 +200,11 @@ val foods = listOf(
         price = 60f
     ),
     Food(
-        id = 14,
-        name = "Mutura",
-        image = R.drawable.mutura,
+        id = 39,
+        name = "Rolex",
+        image = R.drawable.rolex,
         type = FoodType.Snack,
-        price = 30f
+        price = 60f
     ),
     Food(
         id = 15,
@@ -184,18 +221,18 @@ val foods = listOf(
         price = 30f
     ),
     Food(
-        id = 17,
-        name = "Bhajias",
-        image = R.drawable.bhajias,
+        id = 14,
+        name = "Mutura",
+        image = R.drawable.mutura,
         type = FoodType.Snack,
-        price = 100f
+        price = 30f
     ),
     Food(
-        id = 18,
-        name = "Chips Mwitu",
-        image = R.drawable.chipsmwitu,
+        id = 40,
+        name = "Hotdog",
+        image = R.drawable.hotdog,
         type = FoodType.Snack,
-        price = 100f
+        price = 110f
     ),
 )
 
@@ -248,17 +285,17 @@ fun MenuScreen(navController: NavHostController, viewModel: SharedViewModel) {
                             viewModel = viewModel
                         )
                     },
-                    "Fruits" to {
+                    "Snacks" to {
                         Foods(
-                            items = foodsState.filter { it.type == FoodType.Side },
+                            items = foodsState.filter { it.type == FoodType.Snack },
                             onLikeChange = onLikeChange,
                             onTap = {},
                             viewModel = viewModel
                         )
                     },
-                    "Snacks" to {
+                    "Fruits" to {
                         Foods(
-                            items = foodsState.filter { it.type == FoodType.Snack },
+                            items = foodsState.filter { it.type == FoodType.Fruit },
                             onLikeChange = onLikeChange,
                             onTap = {},
                             viewModel = viewModel

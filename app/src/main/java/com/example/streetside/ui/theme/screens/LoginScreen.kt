@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,18 +29,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.streetside.R
 import com.example.streetside.database.UserViewModel
 import com.example.streetside.database.UserViewModelFactory
 import com.example.streetside.model.SharedViewModel
-import com.example.streetside.model.Utilities
 import com.example.streetside.ui.theme.Orange
 import com.example.streetside.ui.theme.ubuntuFont
 
@@ -48,17 +53,11 @@ fun LoginScreen(navController: NavHostController, viewModel: SharedViewModel,
 ){
     var username by remember { mutableStateOf(TextFieldValue("")) }
     var pass by remember { mutableStateOf(TextFieldValue("")) }
+    var passwordVisible by remember { mutableStateOf(false) }
     val context= LocalContext.current
     val userState by userViewModel.user.observeAsState()
-
-//    val loggedInUsername = Utilities.getUsername(context)
-//    if (loggedInUsername != null) {
-//        viewModel.getUserByUsername(loggedInUsername)
-//    }
-
     var showToast by remember { mutableStateOf(false) }
 
-    // Check userState and update showToast state
     LaunchedEffect(userState) {
         if (userState == null && username.text.isNotEmpty() && pass.text.isNotEmpty()) {
             showToast = true
@@ -90,10 +89,24 @@ fun LoginScreen(navController: NavHostController, viewModel: SharedViewModel,
         OutlinedTextField(value =pass,
             onValueChange = {pass=it},
             label = { Text(text = "Enter Password") },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(8.dp),
+                    trailingIcon = {
+                val image = if (passwordVisible)
+                    painterResource(id = R.drawable.ic_eye_open)
+                else
+                    painterResource(id = R.drawable.ic_eye_closed)
+
+                val description = if (passwordVisible) "Hide password" else "Show password"
+
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(painter = image, contentDescription = description)
+                }
+            }
         )
         Spacer(modifier = Modifier.height(100.dp))
 
@@ -101,7 +114,7 @@ fun LoginScreen(navController: NavHostController, viewModel: SharedViewModel,
             userViewModel.getUserName(username.text)
             userViewModel.user.observeForever {
                 if (it?.pass == pass.text) {
-                    Utilities.saveUsername(context, username.text)
+                    viewModel.updateUsername(username.text)
                     Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
                     navController.navigate("school")
                 } else {

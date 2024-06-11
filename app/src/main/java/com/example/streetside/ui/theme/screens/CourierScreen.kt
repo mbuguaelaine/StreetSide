@@ -27,9 +27,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.streetside.R
 import com.example.streetside.ui.theme.Orange
 
-
 @Composable
-fun HomeScreen(navController: NavController) {
+fun CourierScreen(navController: NavController) {
     Column(modifier = Modifier
         .fillMaxSize()
         .background(Color.Black),
@@ -38,7 +37,7 @@ fun HomeScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(50.dp))
 
-        Text(text = "WELCOME TO",
+        Text(text = "Your order has been",
             textAlign = TextAlign.Center,
             fontWeight = FontWeight(900),
             color = (Orange),
@@ -46,34 +45,21 @@ fun HomeScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        Text(text = "STREETSIDE",
+        Text(text = "sent successfully!",
             textAlign = TextAlign.Center,
             fontWeight = FontWeight(900),
             color = (Orange),
             fontSize = 40.sp)
 
         Spacer(modifier = Modifier.height(30.dp))
-        
-        Image(painter = painterResource(id = R.drawable.blankstreetsidelogo),
+
+        Image(painter = painterResource(id = R.drawable.smiley),
             modifier = Modifier.size(250.dp),
-            contentDescription = "Streetside Logo")
+            contentDescription = null)
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        Button(onClick = {
-            navController.navigate("login")
-        },Modifier.size(width = 300.dp, height = 60.dp),
-            colors = ButtonDefaults.buttonColors(Orange),
-            shape = RectangleShape) {
-            Text(text = "CLICK TO LOG IN",
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                fontSize = 25.sp)
-        }
-
-        Spacer(modifier = Modifier.height(70.dp))
-
-        Text(text = "Don't have an account?",
+        Text(text = "will deliver your order.",
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.SemiBold,
             color = (Orange),
@@ -81,11 +67,25 @@ fun HomeScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(15.dp))
 
         Button(onClick = {
-            navController.navigate("register")
+            navController.navigate("login")
         }, Modifier.size(width = 300.dp, height = 60.dp),
             colors = ButtonDefaults.buttonColors(Orange),
-            shape = RectangleShape) {
-            Text(text = "CLICK TO REGISTER",
+            shape = RectangleShape
+        ) {
+            Text(text = "CALL COURIER",
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                fontSize = 25.sp)
+        }
+        Spacer(modifier = Modifier.height(50.dp))
+
+        Button(onClick = {
+            navController.navigate("rate")
+        }, Modifier.size(width = 300.dp, height = 60.dp),
+            colors = ButtonDefaults.buttonColors(Orange),
+            shape = RectangleShape
+        ) {
+            Text(text = "GO TO RATING",
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 fontSize = 25.sp)
@@ -100,6 +100,6 @@ fun HomeScreen(navController: NavController) {
 
 @Preview
 @Composable
-fun HomePreview(){
-    HomeScreen(rememberNavController())
+fun CourierPreview(){
+    CourierScreen(rememberNavController())
 }

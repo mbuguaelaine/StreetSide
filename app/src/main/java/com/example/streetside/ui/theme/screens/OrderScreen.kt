@@ -60,17 +60,6 @@ import com.example.streetside.ui.theme.ubuntuFont
 fun OrderScreen(navController: NavHostController, viewModel: SharedViewModel, showPrompt: Boolean) {
     val likedItems by viewModel.likedItems.collectAsState(initial = listOf())
     var showDialog by remember { mutableStateOf(showPrompt) }
-    val context = LocalContext.current
-//    var user by remember { mutableStateOf<User?>(null) }
-//    val username = Utilities.getUsername(context)
-//
-//    LaunchedEffect(username) {
-//        username?.let {
-//            viewModel.getUserByUsername(it) { fetchedUser ->
-//                user = fetchedUser
-//            }
-//        }
-//    }
 
     if (showDialog) {
         AlertDialog(
@@ -315,7 +304,7 @@ fun OrderScreen(navController: NavHostController, viewModel: SharedViewModel, sh
                 onClick = {
                     onConfirmOrder()
                     viewModel.sendOrderViaWhatsApp(items, viewModel.selectedVendor.value, context)
-                    navController.navigate("rate")
+                    navController.navigate("courier")
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 colors = ButtonDefaults.buttonColors(Orange)

@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,20 +13,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,7 +34,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -62,6 +54,8 @@ data class Vending(
     val type: Vendor,
     val owner: String,
     val phonenumber: String,
+    val couriername: String,
+    val couriernumber: String,
     val schoolIds: List<Int>
 )
 
@@ -74,7 +68,6 @@ enum class Vendor {
 @Composable
 fun VendorScreen(navController: NavController, viewModel: SharedViewModel) {
     val uiController = rememberSystemUiController()
-    val context = LocalContext.current
     uiController.isStatusBarVisible = false
 
     LaunchedEffect(Unit) {
@@ -85,7 +78,9 @@ fun VendorScreen(navController: NavController, viewModel: SharedViewModel) {
                 image = R.drawable.benvendor,
                 type = Vendor.Vend,
                 owner = "By: Ben",
-                phonenumber = "254733763368",
+                phonenumber = "254789624800",
+                couriername = "Jack",
+                couriernumber = "254789624800",
                 schoolIds = listOf(26, 27)
             ),
             Vending(
@@ -94,7 +89,9 @@ fun VendorScreen(navController: NavController, viewModel: SharedViewModel) {
                 image = R.drawable.joramvendor,
                 type = Vendor.Vend,
                 owner = "By: Joram",
-                phonenumber = "254787956834",
+                phonenumber = "254789624800",
+                couriername = "Jude",
+                couriernumber = "254789624800",
                 schoolIds = listOf(31, 25)
             ),
             Vending(
@@ -104,6 +101,30 @@ fun VendorScreen(navController: NavController, viewModel: SharedViewModel) {
                 type = Vendor.Vend,
                 owner = "By: Salma",
                 phonenumber = "254789624800",
+                couriername = "Ronald",
+                couriernumber = "254789624800",
+                schoolIds = listOf(31, 25)
+            ),
+            Vending(
+                id = 41,
+                name = "Gillie's",
+                image = R.drawable.gilbertvendor,
+                type = Vendor.Vend,
+                owner = "By: Gilbert",
+                phonenumber = "254789624800",
+                couriername = "Luke",
+                couriernumber = "254789624800",
+                schoolIds = listOf(31, 25)
+            ),
+            Vending(
+                id = 42,
+                name = "Home Fry",
+                image = R.drawable.carovendor,
+                type = Vendor.Vend,
+                owner = "By: Caro",
+                phonenumber = "254789624800",
+                couriername = "Charles",
+                couriernumber = "254789624800",
                 schoolIds = listOf(31, 25)
             ),
             Vending(
@@ -112,7 +133,20 @@ fun VendorScreen(navController: NavController, viewModel: SharedViewModel) {
                 image = R.drawable.rachelvendor,
                 type = Vendor.Vend,
                 owner = "By: Rachel",
-                phonenumber = "254733612019",
+                phonenumber = "254789624800",
+                couriername = "Edwina",
+                couriernumber = "254789624800",
+                schoolIds = listOf(26, 27)
+            ),
+            Vending(
+                id = 43,
+                name = "Farm Fresh",
+                image = R.drawable.lewisvendor,
+                type = Vendor.Vend,
+                owner = "By: Lewis",
+                phonenumber = "254789624800",
+                couriername = "Lulu",
+                couriernumber = "254789624800",
                 schoolIds = listOf(26, 27)
             ),
             Vending(
@@ -121,8 +155,21 @@ fun VendorScreen(navController: NavController, viewModel: SharedViewModel) {
                 image = R.drawable.mosesvendor,
                 type = Vendor.Vend,
                 owner = "By: Moses",
-                phonenumber = "0741235984",
-                schoolIds = listOf(28, 29, 30)
+                phonenumber = "254789624800",
+                couriername = "Julia",
+                couriernumber = "254789624800",
+                schoolIds = listOf(28, 32)
+            ),
+            Vending(
+                id = 44,
+                name = "Schola Eats",
+                image = R.drawable.scholavendor,
+                type = Vendor.Vend,
+                owner = "By: Scholastica",
+                phonenumber = "254789624800",
+                couriername = "Harry",
+                couriernumber = "254789624800",
+                schoolIds = listOf(28, 32)
             ),
             Vending(
                 id = 24,
@@ -130,8 +177,10 @@ fun VendorScreen(navController: NavController, viewModel: SharedViewModel) {
                 image = R.drawable.maryvendor,
                 type = Vendor.Vend,
                 owner = "By: Mary",
-                phonenumber = "0765824317",
-                schoolIds = listOf(32, 33, 34)
+                phonenumber = "254789624800",
+                couriername = "Noah",
+                couriernumber = "254789624800",
+                schoolIds = listOf(29, 30, 33, 34)
             ),
         )
         viewModel.setVendors(vends)
@@ -144,38 +193,18 @@ fun VendorScreen(navController: NavController, viewModel: SharedViewModel) {
             title = {
                 Text(text = "VENDORS", fontFamily = ubuntuFont)
             },
-            navigationIcon = {
-                Row {
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Button(colors = ButtonDefaults.buttonColors(Color.White), onClick = {  } ) {
-                        Icon(imageVector = Icons.Filled.ArrowBack,
-                            tint = Color.Black,
-                            contentDescription = null,
-                        )
-                    }
-
-                }
-            }
         )
     }) { paddings ->
         Column(modifier = Modifier.padding(paddings)) {
             val selectedVendor = remember {
                 mutableIntStateOf(0)
             }
-//            val vendsState = remember {
-//                mutableStateListOf(*(vends).toTypedArray())
-//            }
-
 
             Spacer(modifier = Modifier.height(16.dp))
             TabLayout(
                 items = listOf(
                     "Choose a Vendor:" to {
                         Vendors(
-//                            filteredVendors = { schoolId ->
-//                                              viewModel.filterVendors(schoolId)
-//                            },
-//                            items = vendsState.filter { it.type == Vendor.Vend },
                             navController = navController,
                             viewModel = viewModel,
                             onVendorSelected = { vendors ->
@@ -198,10 +227,7 @@ fun VendorScreen(navController: NavController, viewModel: SharedViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Vendors(
-//    items: List<Vending>,
-//    filteredVendors: (Int) -> Unit,
-    onVendorSelected: (Vending) -> Unit,
+fun Vendors(onVendorSelected: (Vending) -> Unit,
     navController: NavController, viewModel: SharedViewModel){
     val filteredVendors by viewModel.filteredVendors.collectAsState()
     Column(

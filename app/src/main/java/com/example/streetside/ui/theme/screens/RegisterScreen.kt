@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,9 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.streetside.R
 import com.example.streetside.database.User
 import com.example.streetside.database.UserViewModel
 import com.example.streetside.database.UserViewModelFactory
@@ -51,6 +57,7 @@ fun RegisterScreen(navController: NavHostController,
     var surname by remember { mutableStateOf(TextFieldValue("")) }
     var pass by remember { mutableStateOf(TextFieldValue("")) }
     var confirmpass by remember { mutableStateOf(TextFieldValue("")) }
+    var passwordVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     Column(
@@ -107,10 +114,23 @@ fun RegisterScreen(navController: NavHostController,
         OutlinedTextField(
             value = pass, onValueChange = { pass = it },
             label = { Text(text = "Enter Password") },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(8.dp),
+            trailingIcon = {
+                val image = if (passwordVisible)
+                    painterResource(id = R.drawable.ic_eye_open)
+                else
+                    painterResource(id = R.drawable.ic_eye_closed)
+
+                val description = if (passwordVisible) "Hide password" else "Show password"
+
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(painter = image, contentDescription = description)
+                }
+            }
         )
         Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
@@ -118,10 +138,23 @@ fun RegisterScreen(navController: NavHostController,
                 confirmpass = it
             },
             label = { Text(text = "Confirm Password") },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(8.dp),
+            trailingIcon = {
+                val image = if (passwordVisible)
+                    painterResource(id = R.drawable.ic_eye_open)
+                else
+                    painterResource(id = R.drawable.ic_eye_closed)
+
+                val description = if (passwordVisible) "Hide password" else "Show password"
+
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(painter = image, contentDescription = description)
+                }
+            }
         )
         Spacer(modifier = Modifier.height(30.dp))
 

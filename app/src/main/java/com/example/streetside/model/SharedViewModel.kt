@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.streetside.ui.theme.screens.Food
 import com.example.streetside.ui.theme.screens.Schools
@@ -12,7 +14,8 @@ import com.example.streetside.ui.theme.screens.Vending
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class SharedViewModel : ViewModel() {
+class SharedViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
+
     private val _likedItems = MutableStateFlow<List<Food>>(emptyList())
     val likedItems: StateFlow<List<Food>> = _likedItems
 
@@ -34,11 +37,9 @@ class SharedViewModel : ViewModel() {
     private val _totalPrice = MutableStateFlow(100.0)
     val totalPrice: StateFlow<Double> get() = _totalPrice
 
-//    private val _customName = mutableStateOf<User?>(null)
-//    val customName: State<User?> get() = _customName
-//
-//    private val _userDetails = mutableStateOf<User?>(null)
-//    val userDetails: State<User?> = _userDetails
+    private val _username = savedStateHandle.getLiveData<String>("username")
+    val username: LiveData<String> get() = _username
+
 
     fun addItem(food: Food) {
         if (_likedItems.value.none { it.id == food.id }) {
@@ -100,30 +101,19 @@ class SharedViewModel : ViewModel() {
         _totalPrice.value = itemTotal + deliveryFee
     }
 
-//    fun getUserByUsername(username: String, callback: (User?) -> Unit) {
-//        viewModelScope.launch {
-//            val user = userRepository.getUserByUsername(username)
-//            callback(user)
-//            _customName.value = user
-//        }
-//    }
-
-//    fun fetchUserDetails(username: String) {
-//        viewModelScope.launch {
-//            val user = userRepository.getUserByUsername(username)
-//            _customName.value = user
-//        }
-//    } ${name?.firstname} ${name?.surname} (for the whatsapp part)
+    fun updateUsername(username: String) {
+        _username.value = username
+    }
 
     fun sendOrderViaWhatsApp(items: List<Food>, vendor: Vending?, context: Context) {
         vendor?.let {
             val orderDetails = items.joinToString(separator = "\n") { food ->
                 "${food.name} x ${getQuantity(food)} = Kshs ${"%.2f".format(food.price.toDouble() * getQuantity(food))}"
             }
-//            val name = customName.value
+            val name = username.value
             val total = totalPrice.value
             val schools = selectedCollege.value
-            val message = "Order Details:\n$orderDetails\n\nTotal: Kshs ${"%.2f".format(total)}\n\nDeliver To: ${schools?.name} - ${schools?.campus}\n\nCustomer Name:"
+            val message = "Order Details:\n$orderDetails\n\nTotal: Kshs ${"%.2f".format(total)}\n\nDeliver To: ${schools?.name} - ${schools?.campus}\n\nCustomer: $name\n\nPay on Delivery"
 
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 data = Uri.parse("https://wa.me/${vendor.phonenumber}?text=${Uri.encode(message)}")

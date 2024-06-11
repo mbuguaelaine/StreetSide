@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.streetside.model.SharedViewModel
+import com.example.streetside.ui.theme.screens.CourierScreen
 import com.example.streetside.ui.theme.screens.HomeScreen
 import com.example.streetside.ui.theme.screens.LoginScreen
 import com.example.streetside.ui.theme.screens.MenuScreen
@@ -46,6 +47,9 @@ fun Navigation() {
         composable("order?showPrompt={showPrompt}") { backStackEntry ->
             val showPrompt = backStackEntry.arguments?.getString("showPrompt")?.toBoolean() ?: false
             OrderScreen(navController = navController, viewModel = viewModel, showPrompt = showPrompt)
+        }
+        composable(route = "courier") {
+            CourierScreen(navController = navController)
         }
         composable(route = "rate") {
             RatingScreen(navController = navController, viewModel = viewModel)

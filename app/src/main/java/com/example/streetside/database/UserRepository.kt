@@ -14,10 +14,6 @@ class UserRepository(private val userDao: UserDao, private val ratingDao: Rating
         return userDao.checkUsernameExists(userName) > 0
     }
 
-    suspend fun getUserByUsername(username: String): User? {
-        return userDao.getUserByUsername(username)
-    }
-
     suspend fun insertRating(ratings: Ratings){
         ratingDao.insertRating(ratings)
     }
