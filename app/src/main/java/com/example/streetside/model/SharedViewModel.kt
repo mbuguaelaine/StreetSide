@@ -113,7 +113,8 @@ class SharedViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             val name = username.value
             val total = totalPrice.value
             val schools = selectedCollege.value
-            val message = "Order Details:\n$orderDetails\n\nTotal: Kshs ${"%.2f".format(total)}\n\nDeliver To: ${schools?.name} - ${schools?.campus}\n\nCustomer: $name\n\nPay on Delivery"
+            val message = "Order Details:\n$orderDetails\n\nTotal: Kshs ${"%.2f".format(total)}\n\nDeliver To: ${schools?.name} - ${schools?.campus}\n" +
+                    "\nCustomer: $name\n\nPay on Delivery"
 
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 data = Uri.parse("https://wa.me/${vendor.phonenumber}?text=${Uri.encode(message)}")

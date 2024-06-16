@@ -246,7 +246,7 @@ fun MenuScreen(navController: NavHostController, viewModel: SharedViewModel) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
             title = {
-                Text(text = "Our Menu", fontFamily = ubuntuFont)
+                Text(text = "Menu", fontFamily = ubuntuFont)
             },
             navigationIcon = {
                 Row {

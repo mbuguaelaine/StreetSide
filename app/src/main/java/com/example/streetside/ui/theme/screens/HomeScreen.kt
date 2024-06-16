@@ -52,13 +52,13 @@ fun HomeScreen(navController: NavController) {
             color = (Orange),
             fontSize = 40.sp)
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         
         Image(painter = painterResource(id = R.drawable.blankstreetsidelogo),
             modifier = Modifier.size(250.dp),
             contentDescription = "Streetside Logo")
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Button(onClick = {
             navController.navigate("login")
@@ -71,7 +71,7 @@ fun HomeScreen(navController: NavController) {
                 fontSize = 25.sp)
         }
 
-        Spacer(modifier = Modifier.height(70.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         Text(text = "Don't have an account?",
             textAlign = TextAlign.Center,

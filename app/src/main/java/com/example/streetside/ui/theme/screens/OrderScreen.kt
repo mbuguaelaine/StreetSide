@@ -45,10 +45,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.streetside.R
 import com.example.streetside.model.SharedViewModel
 import com.example.streetside.ui.theme.Orange
@@ -256,7 +259,7 @@ fun OrderScreen(navController: NavHostController, viewModel: SharedViewModel, sh
                                     Spacer(modifier = Modifier.width(8.dp))
                                     IconButton(
                                         onClick = {
-                                            if (quantity < 5) {
+                                            if (quantity < 6) {
                                                 quantity++
                                                 onQuantityChange(food, quantity)
                                                 viewModel.updateQuantity(food, quantity)
@@ -317,9 +320,9 @@ fun OrderScreen(navController: NavHostController, viewModel: SharedViewModel, sh
         }
 
 
-//@Preview
-//@Composable
-//fun OrderPreview(){
-//    val mockViewModel = remember { mutableStateOf(SharedViewModel()) }
-//    OrderScreen(rememberNavController(), viewModel = mockViewModel.value, showPrompt = false)
-//}
+@Preview
+@Composable
+fun OrderPreview(){
+    val mockViewModel = remember { mutableStateOf(SharedViewModel(savedStateHandle = SavedStateHandle())) }
+    OrderScreen(rememberNavController(), viewModel = mockViewModel.value, showPrompt = false)
+}

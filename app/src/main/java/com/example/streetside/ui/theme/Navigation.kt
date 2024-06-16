@@ -49,7 +49,7 @@ fun Navigation() {
             OrderScreen(navController = navController, viewModel = viewModel, showPrompt = showPrompt)
         }
         composable(route = "courier") {
-            CourierScreen(navController = navController)
+            CourierScreen(navController = navController, viewModel = viewModel)
         }
         composable(route = "rate") {
             RatingScreen(navController = navController, viewModel = viewModel)
